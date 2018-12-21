@@ -130,7 +130,20 @@ plugins:
 
 Next, we dump a massive `custom` section to our `serverless.yml`; it's instructively to look at the [example section][r11]
 
-Since I have no idea what's going on, I will attempt to break down what we see line by line
+Since I have no idea what's going on, I copied over the content of the [serverless app-sync example][r13] and will now try to get it working for me (to get rid of noise, I'm currently only supporting the `meInfo` query)
+
+```yaml
+custom:
+  accountId: 1234xxxxxxxx # replace this with your accountId
+```
+
+First off, [accountId][r12] appears to be something I can get from my console
+
+@TODOs
+
+- [ ] attempt to deploy what I have
+- [ ] triage what went wrong
+- [ ] document what I did in `handler.ts`, `mapping-templates/*`, and `serverless.yml`
 
 ## Mapping Templates
 
@@ -163,3 +176,4 @@ The reference section will log every (relevant) source I had to consult in order
 - [r10]: <https://docs.aws.amazon.com/appsync/latest/devguide/resolver-context-reference.html> "AWS AppSync context reference"
 - [r11]: <https://github.com/sid88in/serverless-appsync-plugin/blob/master/example/serverless.yml#L17> "Example AppSync Serverless Custom Config"
 - [r12]: <https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html> "AWS Docs on Account ID"
+- [r13]: <https://github.com/serverless/serverless-graphql/blob/c8a2ea36923a1cd393946494c01533603705d7d5/app-backend/appsync/lambda/serverless.yml#L16> "Serverless GraphQL AppSync Lambda Backend Serverless YAML ref"

@@ -1,5 +1,5 @@
 type Query {
-	meInfo(consumer_key: String!, consumer_secret: String!): User!
+	meInfo(): User!
 }
 
 type User {
@@ -7,10 +7,6 @@ type User {
 	handle: String!
 	location: String!
 	description: String!
-	followers_count: Int!
-	friends_count: Int!
-	favourites_count: Int!
-	following: [String!]!
 }
 
 schema {
