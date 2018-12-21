@@ -18,3 +18,6 @@ I want to use GraphQL on the back-end and [AWS app-sync](https://aws.amazon.com/
 
 ### AppSync in ReasonML
 
+# References
+
+- [lerna](https://github.com/lerna/lerna)

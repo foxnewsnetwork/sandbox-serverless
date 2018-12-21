@@ -4,7 +4,7 @@ export const hello: Handler = (event: APIGatewayEvent, context: Context, cb: Cal
   const response = {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'Go Serverless Webpack (Typescript) v1.0! Your function executed successfully!',
+      message: 'xxx Go Serverless Webpack (Typescript) v1.0! Your function executed successfully! xxx',
       input: event,
     }),
   };
