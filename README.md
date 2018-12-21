@@ -10,16 +10,25 @@ Obviously, the long-term goal would be to get comfortable with the current meta 
 
 I want to use GraphQL on the back-end and [AWS app-sync](https://aws.amazon.com/appsync/) provides this functionality. The goal here is to get a feel for this
 
-- [ ] Use serverless to scaffold a new package under `packages/*`
-- [ ] Support `query` and `mutation`
-- [ ] Document progress in the `packages/journal/*`
+- [x] Document progress in the `packages/journal/*`
   - [journal entry](./packages/journal/18-12-19-app-sync-hello-world.md)
+- [x] Use serverless to scaffold a new package under `packages/*`
+- [x] Confirm that deployment works
+- [x] Roll in app-sync plugin
+- [ ] Deploy app-sync lambda and try to confirm it works
+- [ ] Support `query` and `mutation`
+- [ ] Support `subscription`
+
 
 ### Persist To Backend With Dynamo
 
 TODO
 
 ### AppSync in ReasonML
+
+TODO
+
+### Cognito User Pools
 
 TODO
 
