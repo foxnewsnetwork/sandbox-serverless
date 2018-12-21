@@ -48,7 +48,7 @@ We can invoke the function with logs
 serverless invoke -f hello -l
 ```
 
-![invocation-success](./18-12-19/invocation-success.png)
+![invocation-success](./assets/18-12-19/invocation-success.png)
 
 Next, I setup [insomnia rest client][r5] and attempt the same thing while streaming the logs in console (to ensure everything works lol)
 
@@ -64,7 +64,7 @@ brew cask install insomnia
 
 Recall that my endpoint was at `https://7fmkaeuerg.execute-api.us-east-1.amazonaws.com/dev/hello`, I paste that directly into insomnia while tailing my logs.
 
-![insomnia invoke](./18-12-19/insomnia-invoke.png)
+![insomnia invoke](./assets/18-12-19/insomnia-invoke.png)
 
 Note that because AWS bills for usage, it's in my best interest to clean up after I'm done experimenting to not rack up charges while I'm not using
 
@@ -76,7 +76,7 @@ serverless remove
 
 Upon trying to remove, however, I encountered the `cloudformation:DeleteStack` error:
 
-![cant delete error](./18-12-19/delete-error)
+![cant delete error](./assets/18-12-19/delete-error.png)
 
 This is solved by going into the AWS console and adding `cloudformation:DeleteStack` permission to my user group under `iam > groups > YOUR_GROUP`
 
@@ -114,6 +114,8 @@ After adding the `"cloudformation:DeleteStack"` to my permissions, I now success
 
 ## App Sync Plugin
 
+The idea here is to roll the [app-sync plugin][r6] into our system
+
 ## Mapping Templates
 
 ## Deployment
@@ -128,3 +130,4 @@ The reference section will log every (relevant) source I had to consult in order
 [r3]: <https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript> "aws nodejs typescript template"
 [r4]: <https://serverless.com/framework/docs/providers/aws/guide/quick-start#deploy-test-and-diagnose-your-service> "deploying a lambda"
 [r5]: <https://insomnia.rest/> "Insomnia REST client"
+[r6]: <https://github.com/sid88in/serverless-appsync-plugin> "Serverless AppSync Plugin"
