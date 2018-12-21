@@ -114,20 +114,52 @@ After adding the `"cloudformation:DeleteStack"` to my permissions, I now success
 
 ## App Sync Plugin
 
-The idea here is to roll the [app-sync plugin][r6] into our system
+The idea here is to roll the [app-sync plugin][r6] into our system, following their [installation guide][r7], I first add the dependency:
+
+```zsh
+yarn add serverless-appsync-plugin
+```
+
+Then add the `serverless-appsync-plugin` into my `plugins` section in [serverless.yml](../sandbox-appsync/serverless.yml)
+
+```yaml
+plugins:
+  - serverless-webpack
+  - serverless-appsync-plugin
+```
+
+Next, we dump a massive `custom` section to our `serverless.yml`; it's instructively to look at the [example section][r11]
+
+Since I have no idea what's going on, I will attempt to break down what we see line by line
 
 ## Mapping Templates
 
+VTL is a beast in its own right, so off the bat, it's a good idea to read through and constantly reference the guides
+
 ## Deployment
+
+# Appendix
+
+## Appendix A - Q and A
+
+Q: Why AppSync?
+
+A: Because Lambda+GraphQL doesn't allow subscriptions
 
 # References
 
 The reference section will log every (relevant) source I had to consult in order to get all this sh*t together. (I make a big reference list here because I'm in the habit of minimizing the number of tabs I have open)
 
-[r0]: <https://stackoverflow.com/questions/11948245/markdown-to-create-pages-and-table-of-contents> "creating a table of contents in markdown"
-[r1]: <https://serverless.com/framework/docs/providers/aws/guide/quick-start/> "serverless aws quick-start"
-[r2]: <https://daringfireball.net/projects/markdown/syntax> "markdown syntax guide"
-[r3]: <https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript> "aws nodejs typescript template"
-[r4]: <https://serverless.com/framework/docs/providers/aws/guide/quick-start#deploy-test-and-diagnose-your-service> "deploying a lambda"
-[r5]: <https://insomnia.rest/> "Insomnia REST client"
-[r6]: <https://github.com/sid88in/serverless-appsync-plugin> "Serverless AppSync Plugin"
+- [r0]: <https://stackoverflow.com/questions/11948245/markdown-to-create-pages-and-table-of-contents> "creating a table of contents in markdown"
+- [r1]: <https://serverless.com/framework/docs/providers/aws/guide/quick-start/> "serverless aws quick-start"
+- [r2]: <https://daringfireball.net/projects/markdown/syntax> "markdown syntax guide"
+- [r3]: <https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript> "aws nodejs typescript template"
+- [r4]: <https://serverless.com/framework/docs/providers/aws/guide/quick-start#deploy-test-and-diagnose-your-service> "deploying a lambda"
+- [r5]: <https://insomnia.rest/> "Insomnia REST client"
+- [r6]: <https://github.com/sid88in/serverless-appsync-plugin> "Serverless AppSync Plugin"
+- [r7]: <https://github.com/sid88in/serverless-appsync-plugin#-installation> "AppSync Plugin Installation Guide"
+- [r8]: <https://hackernoon.com/running-a-scalable-reliable-graphql-endpoint-with-serverless-24c3bb5acb43> "AppSync GraphQL backend guide"
+- [r9]: <https://docs.aws.amazon.com/appsync/latest/devguide/resolver-mapping-template-reference-programming-guide.html> "VTL programming guide"
+- [r10]: <https://docs.aws.amazon.com/appsync/latest/devguide/resolver-context-reference.html> "AWS AppSync context reference"
+- [r11]: <https://github.com/sid88in/serverless-appsync-plugin/blob/master/example/serverless.yml#L17> "Example AppSync Serverless Custom Config"
+- [r12]: <https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html> "AWS Docs on Account ID"

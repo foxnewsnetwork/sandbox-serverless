@@ -12,11 +12,16 @@ I want to use GraphQL on the back-end and [AWS app-sync](https://aws.amazon.com/
 
 - [ ] Use serverless to scaffold a new package under `packages/*`
 - [ ] Support `query` and `mutation`
-- [ ] Use dynamo-db for persistence
 - [ ] Document progress in the `packages/journal/*`
   - [journal entry](./packages/journal/18-12-19-app-sync-hello-world.md)
 
+### Persist To Backend With Dynamo
+
+TODO
+
 ### AppSync in ReasonML
+
+TODO
 
 # References
 
