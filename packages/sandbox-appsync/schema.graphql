@@ -1,5 +1,5 @@
 type Query {
-	meInfo(): User!
+	meInfo: User!
 }
 
 type User {

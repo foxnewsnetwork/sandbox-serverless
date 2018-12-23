@@ -64,8 +64,6 @@ export const graphqlHandler: Handler = (event: MeInfoRequestEvent, context: Cont
   const myHandle = event.handle;
 
   meInfo(myHandle, consumerKey, consumerSecret)
-    .then(result => {
-      cb(null, result);
-    })
-    .catch(error => cb(error, null));
+    .then(result => cb(null, result))
+    .catch(error => cb(error, null))
 }

@@ -28,9 +28,9 @@ TODO
 
 TODO
 
-### Cognito User Pools
+### Cognito User Pools 
 
-TODO
+Where we tackle things like OPENID and other such sources of authentication
 
 # References
 

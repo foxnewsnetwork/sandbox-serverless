@@ -20,16 +20,12 @@ functions:
           method: get
           path: hello
 
+
 custom:
-  accountId: 1234xxxxxxxx # replace this with your accountId
   appSync:
     name:  sandbox-api
     # apiId # only required for update-appsync
-    authenticationType: AMAZON_COGNITO_USER_POOLS # API_KEY is also supported
-    userPoolConfig:
-      awsRegion: us-east-1 # required # region
-      defaultAction: ALLOW
-      userPoolId: us-east-1_xxxxxxxxx # replace this with your Cognito User Pool Id
+    authenticationType: AWS_IAM # API_KEY is also supported
     # region: # defaults to provider region
     # mappingTemplatesLocation: # defaults to mapping-templates
     mappingTemplates:
@@ -45,15 +41,15 @@ custom:
         name: Lambda
         description: 'Lambda DataSource'
         config:
-          lambdaFunctionArn: "arn:aws:lambda:us-east-1:${self:custom.accountId}:function:serverless-graphql-appsync-lda-production-graphql"
-          serviceRoleArn: "arn:aws:iam::${self:custom.accountId}:role/Lambda-${self:custom.appSync.serviceRole}"
+          lambdaFunctionArn: !GetAtt GraphqlLambdaFunction.Arn
+          serviceRoleArn: !GetAtt AppSyncServiceRole.Arn
 
 resources:
   Resources:
     AppSyncServiceRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: "Lambda-AppSyncServiceRole"
+        RoleName: "Lambda-${self:custom.appSync.serviceRole}"
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -66,7 +62,7 @@ resources:
                 - "sts:AssumeRole"
         Policies:
           -
-            PolicyName: "Lambda-AppSyncServiceRole-Policy"
+            PolicyName: "Lambda-${self:custom.appSync.serviceRole}-Policy"
             PolicyDocument:
               Version: "2012-10-17"
               Statement:
@@ -75,5 +71,10 @@ resources:
                   Action:
                     - "lambda:invokeFunction"
                   Resource:
-                    - "arn:aws:lambda:us-east-1:*:function:serverless-graphql-appsync-lda-production-graphql"
-                    - "arn:aws:lambda:us-east-1:*:function:serverless-graphql-appsync-lda-production-graphql:*"
+                    - "Fn::Join":
+                      - ":"
+                      - - "arn:aws:lambda"
+                        - !Ref "AWS::Region"
+                        - !Ref "AWS::AccountId"
+                        - "function"
+                        - "*"

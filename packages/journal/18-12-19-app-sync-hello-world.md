@@ -132,24 +132,126 @@ Next, we dump a massive `custom` section to our `serverless.yml`; it's instructi
 
 Since I have no idea what's going on, I copied over the content of the [serverless app-sync example][r13] and will now try to get it working for me (to get rid of noise, I'm currently only supporting the `meInfo` query)
 
+>Note: be sure to have the [aws-cli][r14], and [aws-sdk][r15] installed, otherwise it seems the appsync plugin won't work
+
+
+### Serverless YAML: custom.accountId
+
 ```yaml
 custom:
   accountId: 1234xxxxxxxx # replace this with your accountId
 ```
 
-First off, [accountId][r12] appears to be something I can get from my console
+First off, [accountId][r12] appears to be something I can get from my console; trying to deploy without it results in the following error:
 
-@TODOs
+```text
+ Serverless Warning --------------------------------------
 
-- [ ] attempt to deploy what I have
-- [ ] triage what went wrong
-- [ ] document what I did in `handler.ts`, `mapping-templates/*`, and `serverless.yml`
+A valid service attribute to satisfy the declaration 'self:custom.accountId' could not be found.
+
+
+Serverless Warning --------------------------------------
+
+A valid service attribute to satisfy the declaration 'self:custom.accountId' could not be found.
+
+
+Serverless Error ---------------------------------------
+
+Trying to populate non string value into a string for variable ${self:custom.accountId}. Please make sure the value of the property is a string.
+```
+
+Apparently, `accountId` is merely a way for me to pass in my accountId details into serverless so that I can refer to it later on in `dataSources[0].config`:
+
+```yaml
+lambdaFunctionArn: "arn:aws:lambda:us-east-1:${self:custom.accountId}:function:serverless-graphql-appsync-lda-production-graphql"
+serviceRoleArn: "arn:aws:iam::${self:custom.accountId}:role/Lambda-${self:custom.appSync.serviceRole}"
+```
+
+Of course, [consulting this example][r16], where they do NOT go into such details:
+
+```yaml
+config:
+  lambdaFunctionArn: { Fn::GetAtt: [GraphqlLambdaFunction, Arn] }
+  serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+```
+
+I have the following two questions:
+
+Q: What is an `Arn`
+
+A: [ARN or Amazon Resource Name][r18] apparently is a way to uniquely identify a service in amazon; typically `accountId` is a paret of an `Arn` which is why they must typically be declared
+
+Q: What does stuff like `GraphqlLambdaFunction` and `AppSyncLambdaServiceRole` correspond to?
+
+A: `AppSyncLambdaServiceRole` can be found later on the [config file][r17]. Based upon research it seems stuff like `{ Fn::GetAtt: [GraphqlLambdaFunction, Arn] }` is special serverless syntax for serverless to get the `ARN`s of the functions that it deploys.
+
+>Protip: You can refer to another yaml file in `serverless.yml` via the `${file(./file-to-conf.yml)}` macro [r19]; this is particularly helpful if you don't want to commit your `accountId` or other such information into github
+
+Next, we never have a field named `name: GraphqlLambdaFunction` anywhere, but it seems `GraphqlLambdaFunction` refers to `serverless:functions.graphql` nevertheless. It's likely that the convention at play here is to take the keys of the fields declare under `functions` and capitlize then append with `LambdaFunction` for `FN::GetAtt` to consume. [r20]
+
+>Protip 2: using `FN::Join` can go a long way to avoid hard-coding dynamic values [r21]; see the aws guide on pseduo parameters on AWS [r22]
+
+After doing a bunch of reasearch and making modifications to the `serverless.yml`, I am finally able to deploy via
+
+```zsh
+sls deploy -v
+```
+
+And I return with the following:
+
+```txt
+Service Information
+service: sandbox-appsync
+stage: dev
+region: us-east-1
+stack: sandbox-appsync-dev
+api keys:
+  None
+endpoints:
+  GET - https://frdkmwsy94.execute-api.us-east-1.amazonaws.com/dev/hello
+functions:
+  graphql: sandbox-appsync-dev-graphql
+  hello: sandbox-appsync-dev-hello
+layers:
+  None
+
+Stack Outputs
+GraphQlApiUrl: https://2mej25sxargazhknywxcf56xf4.appsync-api.us-east-1.amazonaws.com/graphql
+GraphqlLambdaFunctionQualifiedArn: arn:aws:lambda:us-east-1:768225033750:function:sandbox-appsync-dev-graphql:1
+HelloLambdaFunctionQualifiedArn: arn:aws:lambda:us-east-1:768225033750:function:sandbox-appsync-dev-hello:2
+ServiceEndpoint: https://frdkmwsy94.execute-api.us-east-1.amazonaws.com/dev
+ServerlessDeploymentBucketName: sandbox-appsync-dev-serverlessdeploymentbucket-1pw4p7x40pqei
+
+```
+
+As usual, we test by following the remote logs (this time for GraphQL):
+
+```zsh
+serverless logs -f graphql -t
+```
+
+Then hitting up the generated endpoint `https://2mej25sxargazhknywxcf56xf4.appsync-api.us-east-1.amazonaws.com/graphql` via insomnia
+
+Sending in a nascent request gets me a `403` forbidden response:
+
+```json
+{
+  "errors": [
+    {
+      "errorType": "MissingAuthenticationTokenException",
+      "message": "Missing Authentication Token"
+    }
+  ]
+}
+```
+
+On top of that, my previous `hello` world example is now also timing out (ugh)
+
+@TODO: Figure out how permissions and such work and get this request to go through
 
 ## Mapping Templates
 
 VTL is a beast in its own right, so off the bat, it's a good idea to read through and constantly reference the guides
-
-## Deployment
 
 # Appendix
 
@@ -177,3 +279,13 @@ The reference section will log every (relevant) source I had to consult in order
 - [r11]: <https://github.com/sid88in/serverless-appsync-plugin/blob/master/example/serverless.yml#L17> "Example AppSync Serverless Custom Config"
 - [r12]: <https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html> "AWS Docs on Account ID"
 - [r13]: <https://github.com/serverless/serverless-graphql/blob/c8a2ea36923a1cd393946494c01533603705d7d5/app-backend/appsync/lambda/serverless.yml#L16> "Serverless GraphQL AppSync Lambda Backend Serverless YAML ref"
+- [r14]: <https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html> "AWS-CLI installation"
+- [r15]: <https://aws.amazon.com/sdk-for-node-js/> "AWS-SDK installation"
+- [r16]: <https://github.com/sid88in/serverless-appsync-plugin/blob/b82389a3750f62c2d2e3da8f31984d52cc5ea38a/example/serverless.yml#L101-L103> "AppSync Serverless Data Source Lambda Config Example"
+- [r17]: <https://github.com/sid88in/serverless-appsync-plugin/blob/b82389a3750f62c2d2e3da8f31984d52cc5ea38a/example/serverless.yml#L212> "AppSync Serverless Service Role Config Example"
+- [r18]: <https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html> "ARN - amazon resource names for uniquely identifying resources on aws"
+- [r19]: <https://github.com/andymac4182/serverless_example/blob/e3db3dc0150f25e35e5cdfe4280563fe34efc88e/src/serverless.yml#L23> "Serverless YAML cross file references"
+- [r20]: <https://serverless.com/framework/docs/providers/aws/guide/resources/> "Serverless AWS Resource Guides"
+- [r21]: <https://botleg.com/stories/developing-in-aws-lambda-with-serverless-framework/> "Deploying AWS Lambda with Serverless and Writing the Config Files"
+- [r21]: <https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html> "AWS Pseduo Parameter References"
+- [r22]: <https://docs.aws.amazon.com/appsync/latest/devguide/security.html> "AppSync permission authentication setup"
