@@ -540,6 +540,8 @@ as the expected response. Amazing! It works!! As a bonus, the "hello world" requ
 
 As usual, I clean up this session with `serverless remove`
 
+Next time, we will go over local GraphQL app-sync development
+
 # Appendix
 
 ## Appendix A - Q and A
