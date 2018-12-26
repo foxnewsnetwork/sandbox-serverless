@@ -15,12 +15,17 @@ I want to use GraphQL on the back-end and [AWS app-sync](https://aws.amazon.com/
 - [x] Use serverless to scaffold a new package under `packages/*`
 - [x] Confirm that deployment works
 - [x] Roll in app-sync plugin
-- [ ] Deploy app-sync lambda and try to confirm it works
-- [ ] Support `query` and `mutation`
-- [ ] Support `subscription`
+- [x] Deploy app-sync lambda and try to confirm it works
 
+### AppSync Local GraphQL Playground
+
+- [ ] Develop locally w/out actual deployment
+TODO
 
 ### Persist To Backend With Dynamo
+
+- [ ] Support `query` and `mutation`
+- [ ] Support `subscription`
 
 TODO
 
@@ -28,7 +33,10 @@ TODO
 
 TODO
 
-### Cognito User Pools 
+### Authentication Techniques
+
+- Cognito User Pools 
+- OpenID
 
 Where we tackle things like OPENID and other such sources of authentication
 

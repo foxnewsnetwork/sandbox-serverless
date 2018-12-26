@@ -4,6 +4,6 @@
     "payload": {
         "field": "meInfo",
         "arguments":  $utils.toJson($context.arguments),
-        "handle" : $utils.toJson($context.identity.username)
+        "handle" : $utils.toJson($context.request.headers.x-username)
     }
 }
